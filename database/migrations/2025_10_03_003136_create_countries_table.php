@@ -8,15 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('stations', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
-            $table->text('code')->nullable();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->string('abbrev', 10)->nullable();
             $table->boolean('status')->default(true);
-
-            $table->unsignedBigInteger('id_city');
-        
-
             $table->timestamps();
             $table->softDeletes();
         });
@@ -24,6 +21,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('stations');
+        Schema::dropIfExists('countries');
     }
 };

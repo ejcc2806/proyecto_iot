@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class contacto extends Model
+class Stations extends Model
 {
     //
 }
