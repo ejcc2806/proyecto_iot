@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('mobile_phone', 20)->nullable();
             $table->boolean('status')->default(true);
-            $table->foreignId('id_city')->constrained('cities')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

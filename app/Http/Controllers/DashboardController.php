@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Station;
-use App\Models\SensorData;
 use App\Models\Sensor;
+use App\Models\SensorData;
 
 class DashboardController extends Controller
 {
@@ -19,6 +16,6 @@ class DashboardController extends Controller
         $lastSync = SensorData::max('created_at');
         $dbDriver = strtoupper(config('database.default'));
 
-        return view('dashboard', compact('stations','sensorsOnline','lastSync','dbDriver'));
+        return view('dashboard', compact('stations', 'sensorsOnline', 'lastSync', 'dbDriver'));
     }
 }

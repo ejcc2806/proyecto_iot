@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sensor;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\Sensor;
 use App\Models\Department;
-
 
 class SensorController extends Controller
 {
     public function index()
     {
-        $sensors = Sensor::with('department.country')->paginate(10);
+        $sensors = Sensor::with('department.country')
+            ->orderBy('name')
+            ->paginate(10);
+
         return view('sensors.index', compact('sensors'));
     }
 
@@ -25,22 +25,20 @@ class SensorController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name'          => 'required',
-            'code'          => 'required|unique:sensors,code',
-            'abbrev'        => 'nullable',
-            'id_department' => 'required|exists:departments,id',
-            'status'        => 'nullable'
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'code' => 'required|string|max:20|unique:sensors,code',
+            'abbrev' => 'nullable|string|max:10',
+            'id_department' => 'required|exists:departments,id'
         ]);
 
         Sensor::create([
-            'name'          => $data['name'],
-            'code'          => $data['code'],
-            'abbrev'        => $data['abbrev'] ?? null,
-            'id_department' => $data['id_department'],
-            'status'        => $request->boolean('status'),
+            'name' => $request->name,
+            'code' => $request->code,
+            'abbrev' => $request->abbrev,
+            'id_department' => $request->id_department
         ]);
 
-        return redirect()->route('sensors.index')->with('ok', 'Sensor creado');
+        return redirect()->route('sensors.index')->with('ok', 'Sensor creado exitosamente.');
     }
 }

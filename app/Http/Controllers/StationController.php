@@ -2,65 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Station;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Station;
+use App\Models\City;
 
 class StationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $stations = Station::with('city.department.country')
+            ->orderBy('name')
+            ->paginate(10);
+
+        return view('stations.index', compact('stations'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $cities = City::orderBy('name')->get();
+        return view('stations.create', compact('cities'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'code' => 'required|string|max:20|unique:stations,code',
+            'id_city' => 'required|exists:cities,id'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Station $station)
-    {
-        //
-    }
+        Station::create([
+            'name' => $request->name,
+            'code' => $request->code,
+            'id_city' => $request->id_city
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Station $station)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Station $station)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Station $station)
-    {
-        //
+        return redirect()->route('stations.index')->with('ok', 'Estación creada exitosamente.');
     }
 }
